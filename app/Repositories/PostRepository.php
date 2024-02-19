@@ -2,36 +2,41 @@
 
 namespace App\Repositories;
 
+use App\DTO\DummyPostDTO;
 use App\Repositories\Interfaces\PostRepositoryInterface;
 use App\Repositories\Interfaces\TagRepositoryInterface;
 use App\Repositories\Interfaces\CommentRepositoryInterface;
 use App\Services\Dummyjson\DummyjsonService;
 use Illuminate\Support\Collection;
 use App\Models\Post;
+use App\DTO\Factories\DummyPostDTOFactory;
+use Illuminate\Support\Facades\Cache;
 
 
 class PostRepository implements PostRepositoryInterface
 {
-    public function getCountPostFromDb(): int
+    public function count(): int
     {
-        return count(Post::all());
+        return Cache::remember('count_of_posts_for_api',320, function (){
+            return Post::count();
+        });
     }
 
-    public function createWithCommentsAndTags(array $post, DummyjsonService $dummyjsonService, TagRepositoryInterface $tagRepository, CommentRepositoryInterface $commentRepository): void
+    public function createWithCommentsAndTags(DummyPostDTO $dummyPostDTO, DummyjsonService $dummyjsonService, TagRepositoryInterface $tagRepository, CommentRepositoryInterface $commentRepository): void
     {
         Post::create([
-            'title' => $post['title'],
-            'body' => $post['body'],
-            'user_id' => $post['userId'],
-            'reactions' => $post['reactions']
+            'title' => $dummyPostDTO->title,
+            'body' => $dummyPostDTO->body,
+            'user_id' => $dummyPostDTO->user_id,
+            'reactions' => $dummyPostDTO->reactions
         ]);
-        foreach($post['tags'] as $tag){
-            $tagRepository->create($post['id'], $tag);
-        }
-        $comments = $dummyjsonService->getCommentsByPostId($post['id']);
-        foreach($comments['comments'] as $comment){
-            $commentRepository->create($comment);
-        }
+//        foreach ($dummyPostDTO['tags'] as $tag) {
+//            $tagRepository->create($post['id'], $tag);
+//        }
+//        $comments = $dummyjsonService->getCommentsByPostId($post['id']);
+//        foreach ($comments['comments'] as $comment) {
+//            $commentRepository->create($comment);
+//        }
 
     }
 

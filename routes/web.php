@@ -2,7 +2,10 @@
 
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\PostsController;
+use App\Http\Resources\PostCollection;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\PostApiController;
+use App\Models\Post;
 
 /*
 |--------------------------------------------------------------------------
