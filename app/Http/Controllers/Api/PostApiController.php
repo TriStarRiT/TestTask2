@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Actions\CheckPostUpdate;
+use App\DTO\Factories\PostDTOFactory;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostApiRequest;
+use App\Http\Requests\PostRequest;
+use App\Http\Requests\PostUpdateRequest;
 use App\Http\Resources\PostCollection;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
 use App\Repositories\PostRepository;
 use App\Services\JsonValidator\JsonValidator;
-use Illuminate\Http\Request;
 
 class PostApiController extends Controller
 {
@@ -26,32 +29,37 @@ class PostApiController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(PostRequest $request, PostRepository $postRepository)
     {
-        //
+        $post = PostDTOFactory::createPostFromRequest($request);
+        $postRepository->create($post);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Post $post): PostResource
     {
-        //
+        return new PostResource($post);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(PostUpdateRequest $request, string $id)
     {
-        //
+        $unused_fields = (new CheckPostUpdate)
+            ->checkPostForEmpty(PostDTOFactory::createPostForUpdateFromRequest($request));
+        $post = Post::findOrFail($id);
+        $post->fill($request->except($unused_fields));
+        $post->save();
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Post $post)
     {
-        //
+        $post->delete();
     }
 }

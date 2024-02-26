@@ -3,13 +3,14 @@
 namespace App\Repositories;
 
 use App\DTO\DummyPostDTO;
+use App\DTO\PostDTO;
 use App\Repositories\Interfaces\PostRepositoryInterface;
 use App\Repositories\Interfaces\TagRepositoryInterface;
 use App\Repositories\Interfaces\CommentRepositoryInterface;
 use App\Services\Dummyjson\DummyjsonService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use App\Models\Post;
-use App\DTO\Factories\DummyPostDTOFactory;
 use Illuminate\Support\Facades\Cache;
 
 
@@ -17,7 +18,7 @@ class PostRepository implements PostRepositoryInterface
 {
     public function count(): int
     {
-        return Cache::remember('count_of_posts_for_api',320, function (){
+        return Cache::remember('count_of_posts_for_api', 320, function () {
             return Post::count();
         });
     }
@@ -40,13 +41,13 @@ class PostRepository implements PostRepositoryInterface
 
     }
 
-    public function create(array $post): void
+    public function create(PostDTO $post): void
     {
         Post::create([
-            'title' => $post['title'],
-            'body' => $post['body'],
-            'user_id' => $post['user_id'],
-            'reactions' => $post['reactions']
+            'title' => $post->title,
+            'body' => $post->body,
+            'user_id' => $post->user_id,
+            'reactions' => $post->reactions
         ]);
     }
 

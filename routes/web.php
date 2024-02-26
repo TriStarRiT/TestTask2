@@ -23,3 +23,6 @@ Route::get('/', function () {
 });
 Route::get('/import', ImportController::class)->name('import');
 Route::get('/posts', [PostsController::class, 'index'])->name('test');
+
+Route::get('post/create', [PostsController::class, 'create'])->name('postCreate');
+Route::post('/post', [PostsController::class, 'store'])->name('postStore');

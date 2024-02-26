@@ -14,9 +14,9 @@ class PostsController extends Controller
     public function index(PostRepositoryInterface $postRepository, TagRepositoryInterface $tagRepository, CommentRepository $commentRepository)
     {
         $posts = $postRepository->getLastPosts(10);
-        foreach($posts as $post){
+        foreach ($posts as $post) {
             $post['tags'] = $tagRepository->getByPostId($post['id']);
-            $post['comments'] = $commentRepository->getCommentsByPostId($post['id'],5);
+            $post['comments'] = $commentRepository->getCommentsByPostId($post['id'], 5);
         }
         return view('posts', ['posts' => $posts]);
     }
