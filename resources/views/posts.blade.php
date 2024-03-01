@@ -14,7 +14,14 @@
 </head>
     <body>
         <nav class="content">
-            @foreach ($posts as $post)
+            {{ Form::open(array('url' => 'foo/bar')) }}
+            {{Form::text('username')}}<br>
+            {{Form::password('password')}}<br>
+            {{Form::button('Click on me!')}}
+            {{ Form::close() }}
+
+
+        @foreach ($posts as $post)
                 <h1>{{$post['title']}}</h1>
                 <p>Published by{{$post['user_id']}}</p>
                 <p>{{$post['body']}}</p>
